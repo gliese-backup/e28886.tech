@@ -1,14 +1,23 @@
 console.clear();
 const express = require("express");
-require("dotenv").config();
+require("dotenv").config(); // Allowing read from .env file
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // Getting port number from .env
 
 const app = express();
-app.set("view engine", "ejs");
-app.use(express.static("public"));
+app.set("view engine", "ejs"); // Setting ejs as our template engine
+
+// MARK: Middlewares
+app.use(express.static("public")); // Using public as our static
 app.use(express.urlencoded({ extended: false })); // Parse form data
 
+app.use(function (req, res, next) {
+  res.locals.errors = []; // Setting empty errors for all templates
+
+  next();
+});
+
+// MARK: Routes
 app.get("/", (req, res) => {
   res.render("homepage");
 });
@@ -48,7 +57,11 @@ app.post("/register", (req, res) => {
     errors.push("Password must not exceed 20 characters");
   }
 
-  return res.send(errors);
+  if (errors.length) {
+    return res.render("homepage", { errors });
+  }
+
+  return res.send(`Thank you for registration ${username}`);
 });
 // User Registration Ends
 
