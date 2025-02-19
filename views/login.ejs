@@ -1,25 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>e28886 &mdash; Login Page</title>
-    <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css" />
-    <link rel="stylesheet" href="/style.css" />
-  </head>
+  <%- include('includes/head') %>
   <body>
-    <header>
-      <h1>e28886.tech</h1>
-      <nav>
-        <a href="/">Home</a> /
-        <a href="login">Login</a>
-      </nav>
-    </header>
+    <%- include('includes/header') %>
 
     <main>
       <form action="#" method="POST">
         <fieldset>
-          <legend>User registration form</legend>
+          <legend>Log In</legend>
 
           <label for="username">Username</label>
           <input type="text" id="username" name="username" autocomplete="off" />
@@ -34,17 +22,11 @@
           />
           <br />
 
-          <button type="submit">Sign Up</button>
+          <button type="submit">Log In</button>
         </fieldset>
       </form>
     </main>
 
-    <footer>
-      <p>
-        Copyright &copy;
-        <a href="https://wakati.tech" target="_blank">Wakati</a>. All rights
-        reserved.
-      </p>
-    </footer>
+    <%- include('includes/footer') %>
   </body>
 </html>

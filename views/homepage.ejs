@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>e28886 &mdash; Release research papers</title>
-    <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css" />
-    <link rel="stylesheet" href="/style.css" />
-  </head>
+  <%- include('includes/head') %>
   <body>
-    <header>
-      <h1>e28886.tech</h1>
-      <nav>
-        <a href="/">Home</a> /
-        <a href="login">Login</a>
-      </nav>
-    </header>
+    <%- include('includes/header') %>
 
     <main>
       <h1>Welcome to e28886</h1>
-      <p>
-        Release your research papers for free online using our interactive
-        dashboard.
-      </p>
+      <p>Create a new account to release research papers.</p>
+
+      <form action="#" method="POST">
+        <fieldset>
+          <legend>Sign Up</legend>
+
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" autocomplete="off" />
+          <br />
+
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="off"
+          />
+          <br />
+
+          <button type="submit">Sign Up</button>
+        </fieldset>
+      </form>
     </main>
 
-    <footer>
-      <p>
-        Copyright &copy;
-        <a href="https://wakati.tech" target="_blank">Wakati</a>. All rights
-        reserved.
-      </p>
-    </footer>
+    <%- include('includes/footer') %>
   </body>
 </html>
