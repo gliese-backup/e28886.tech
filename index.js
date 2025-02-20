@@ -1,6 +1,8 @@
 console.clear();
 require("dotenv").config();
 const express = require("express");
+const bcrypt = require("bcrypt");
+
 const db = require("better-sqlite3")("database.db");
 db.pragma("journal_mode = WAL");
 
@@ -87,6 +89,9 @@ app.post("/register", (req, res) => {
   }
 
   // Add the user to our database
+  const salt = bcrypt.genSaltSync(10);
+  password = bcrypt.hashSync(password, salt);
+
   const statement = db.prepare(
     `INSERT INTO users (username, password) VALUES (?, ?)`
   );
