@@ -68,7 +68,6 @@ app.post("/register", (req, res) => {
   }
 
   users[username] = password;
-  console.log("Account creation: ", users);
 
   return res.send(`Thank you for registration ${username}`);
 });
@@ -101,12 +100,6 @@ app.post("/login", (req, res) => {
   if (users[username] !== password) {
     errors.push("Invalid username / password");
   }
-
-  console.log(errors);
-
-  console.log("-----TESTING-----");
-  console.log("input", username, password);
-  console.log("stored", users);
 
   if (errors.length > 0) {
     return res.render("login", { errors });
