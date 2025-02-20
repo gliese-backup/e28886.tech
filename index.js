@@ -1,8 +1,27 @@
 console.clear();
+require("dotenv").config();
 const express = require("express");
-require("dotenv").config(); // Allowing read from .env file
+const db = require("better-sqlite3")("database.db");
+db.pragma("journal_mode = WAL");
 
 const PORT = process.env.PORT || 3000; // Getting port number from .env
+
+// Database Setup
+const createTables = db.transaction(() => {
+  // Create users table
+  // 1. write a sql statement db.prepare
+  // 2. to run it .run()
+  db.prepare(
+    `
+    CREATE TABLE IF NOT EXISTS users(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username STRING NOT NULL UNIQUE,
+      password STRING NOT NULL
+    )
+    `
+  ).run();
+});
+createTables();
 
 const app = express();
 app.set("view engine", "ejs"); // Setting ejs as our template engine
