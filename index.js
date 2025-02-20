@@ -17,6 +17,8 @@ app.use(function (req, res, next) {
   next();
 });
 
+const users = {};
+
 // MARK: Routes
 app.get("/", (req, res) => {
   res.render("homepage");
@@ -45,6 +47,10 @@ app.post("/register", (req, res) => {
   if (username && !username.match(/^[a-zA-Z0-9]+$/)) {
     errors.push("Username can't contain special characters");
   }
+  // TODO: Check if user already exists in db
+  if (users[username]) {
+    errors.push("User already exists");
+  }
 
   // Password Validation
   if (!password) {
@@ -61,6 +67,9 @@ app.post("/register", (req, res) => {
     return res.render("homepage", { errors });
   }
 
+  users[username] = password;
+  console.log("Account creation: ", users);
+
   return res.send(`Thank you for registration ${username}`);
 });
 // User Registration Ends
@@ -70,7 +79,40 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  res.send("Thanks, you're now logged in!");
+  let { username, password } = req.body;
+  const errors = [];
+
+  username = username.trim();
+
+  if (typeof username !== "string") username = "";
+  if (typeof password !== "string") password = "";
+
+  // Check for empty values
+  if (!username || !password) {
+    errors.push("Please provide proper username & password");
+  }
+
+  // TODO: If not exists
+  if (!users[username]) {
+    errors.push("User does not exist");
+  }
+
+  // Check for password
+  if (users[username] !== password) {
+    errors.push("Invalid username / password");
+  }
+
+  console.log(errors);
+
+  console.log("-----TESTING-----");
+  console.log("input", username, password);
+  console.log("stored", users);
+
+  if (errors.length > 0) {
+    return res.render("login", { errors });
+  }
+
+  return res.send(`Thanks, you're now logged in! ${username}`);
 });
 
 app.listen(PORT, () => {
