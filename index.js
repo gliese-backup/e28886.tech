@@ -2,6 +2,7 @@ console.clear();
 require("dotenv").config();
 const express = require("express");
 const bcrypt = require("bcrypt");
+var cookieParser = require("ookie-parsecr");
 
 const db = require("better-sqlite3")("database.db");
 db.pragma("journal_mode = WAL");
@@ -27,6 +28,7 @@ createTables();
 
 const app = express();
 app.set("view engine", "ejs"); // Setting ejs as our template engine
+app.use(cookieParser());
 
 // MARK: Middlewares
 app.use(express.static("public")); // Using public as our static
@@ -34,6 +36,8 @@ app.use(express.urlencoded({ extended: false })); // Parse form data
 
 app.use(function (req, res, next) {
   res.locals.errors = []; // Setting empty errors for all templates
+
+  console.log(req.cookies.user);
 
   next();
 });
@@ -103,7 +107,7 @@ app.post("/register", (req, res) => {
     secure: true, // Only for https
     sameSite: "strict", // CSRF Attacks but allows for subdomain
     maxAge: 1000 * 60 * 60 * 24, // milliseconds, our cookie is good for a day
-  })
+  });
 
   return res.send(`Thank you for registration ${username}`);
 });
