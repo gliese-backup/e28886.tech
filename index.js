@@ -2,7 +2,7 @@ console.clear();
 require("dotenv").config();
 const express = require("express");
 const bcrypt = require("bcrypt");
-var cookieParser = require("ookie-parsecr");
+const cookieParser = require("cookie-parser");
 
 const db = require("better-sqlite3")("database.db");
 db.pragma("journal_mode = WAL");
@@ -99,10 +99,16 @@ app.post("/register", (req, res) => {
   const statement = db.prepare(
     `INSERT INTO users (username, password) VALUES (?, ?)`
   );
-  statement.run(username, password);
+  const result = statement.run(username, password);
+
+  const lookUp = db.prepare(`SELECT * FROM USERS WHERE ROWID = ?`);
+  const ourUser = lookUp.get(result.lastInsertRowid);
+
+  console.log("-----");
+  console.log(JSON.stringify(ourUser));
 
   // Send back a cookie to the user
-  res.cookie("user", username, {
+  res.cookie("user", ourUser.id, {
     httpOnly: true, // Not for client side JS
     secure: true, // Only for https
     sameSite: "strict", // CSRF Attacks but allows for subdomain
