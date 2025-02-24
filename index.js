@@ -97,6 +97,14 @@ app.post("/register", (req, res) => {
   );
   statement.run(username, password);
 
+  // Send back a cookie to the user
+  res.cookie("user", username, {
+    httpOnly: true, // Not for client side JS
+    secure: true, // Only for https
+    sameSite: "strict", // CSRF Attacks but allows for subdomain
+    maxAge: 1000 * 60 * 60 * 24, // milliseconds, our cookie is good for a day
+  })
+
   return res.send(`Thank you for registration ${username}`);
 });
 // User Registration Ends
