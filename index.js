@@ -111,14 +111,17 @@ app.post("/register", (req, res) => {
   const lookUp = db.prepare(`SELECT * FROM USERS WHERE ROWID = ?`);
   const ourUser = lookUp.get(result.lastInsertRowid);
 
-  const ourTokenValue = jwt.sign(ourUser.id, process.env.JWTSECRET);
+  const ourTokenValue = jwt.sign(
+    { userId: ourUser.id, exp: Date.now() / 1000 + 60 * 60 * 24 * 7 },
+    process.env.JWTSECRET
+  );
 
   // Send back a cookie to the user
   res.cookie("user", ourTokenValue, {
     httpOnly: true, // Not for client side JS
     secure: true, // Only for https
     sameSite: "strict", // CSRF Attacks but allows for subdomain
-    maxAge: 1000 * 60 * 60 * 24, // milliseconds, our cookie is good for a day
+    maxAge: 1000 * 60 * 60 * 24 * 7, // milliseconds, our cookie is good for a week
   });
 
   return res.send(`Thank you for registration ${username}`);
