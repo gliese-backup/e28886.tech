@@ -1,5 +1,7 @@
 console.clear();
 require("dotenv").config();
+
+const jwt = require("jsonwebtoken");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
@@ -104,11 +106,10 @@ app.post("/register", (req, res) => {
   const lookUp = db.prepare(`SELECT * FROM USERS WHERE ROWID = ?`);
   const ourUser = lookUp.get(result.lastInsertRowid);
 
-  console.log("-----");
-  console.log(JSON.stringify(ourUser));
+  const ourTokenValue = jwt.sign(ourUser.id, process.env.JWTSECRET);
 
   // Send back a cookie to the user
-  res.cookie("user", ourUser.id, {
+  res.cookie("user", ourTokenValue, {
     httpOnly: true, // Not for client side JS
     secure: true, // Only for https
     sameSite: "strict", // CSRF Attacks but allows for subdomain
@@ -152,6 +153,12 @@ app.post("/login", (req, res) => {
   }
 
   return res.send(`Thanks, you're now logged in! ${username}`);
+});
+
+// Logout
+app.get("/logout", (req, res) => {
+  res.clearCookie("user");
+  res.redirect("/");
 });
 
 app.listen(PORT, () => {
