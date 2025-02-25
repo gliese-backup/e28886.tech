@@ -39,7 +39,8 @@ app.use(express.urlencoded({ extended: false })); // Parse form data
 app.use(function (req, res, next) {
   res.locals.errors = []; // Setting empty errors for all templates
 
-  console.log(req.cookies.user);
+  const decoded = jwt.verify(req.cookies.user, process.env.JWTSECRET);
+  console.log(decoded);
 
   next();
 });
