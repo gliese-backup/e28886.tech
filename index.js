@@ -88,8 +88,12 @@ app.post("/register", (req, res) => {
   if (username && !username.match(/^[a-zA-Z0-9]+$/)) {
     errors.push("Username can't contain special characters");
   }
-  // TODO: Check if user already exists in db
-  if (users[username]) {
+  const usernameExistsStatement = db.prepare(
+    "SELECT * FROM users WHERE USERNAME = ?"
+  );
+  const usernameCheck = usernameExistsStatement.get(username);
+
+  if (usernameCheck) {
     errors.push("User already exists");
   }
 
