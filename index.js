@@ -88,6 +88,8 @@ app.post("/register", (req, res) => {
   if (username && !username.match(/^[a-zA-Z0-9]+$/)) {
     errors.push("Username can't contain special characters");
   }
+
+  // Check for username in DB
   const usernameExistsStatement = db.prepare(
     "SELECT * FROM users WHERE USERNAME = ?"
   );
@@ -146,7 +148,7 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
-// TODO: Implement Login
+// Implement Login
 app.post("/login", (req, res) => {
   let { username, password } = req.body;
   const errors = [];
@@ -158,24 +160,49 @@ app.post("/login", (req, res) => {
 
   // Check for empty values
   if (!username || !password) {
-    errors.push("Please provide proper username & password");
-  }
-
-  // TODO: If not exists
-  if (!users[username]) {
-    errors.push("User does not exist");
-  }
-
-  // Check for password
-  if (users[username] !== password) {
     errors.push("Invalid username / password");
+  }
+
+  if (errors.length) {
+    return res.render("login", { errors });
+  }
+
+  // If username is not there in the database
+  const userInDBStatement = db.prepare(
+    `SELECT * FROM users WHERE USERNAME = ?`
+  );
+  const userInDB = userInDBStatement.get(username);
+
+  if (!userInDB) {
+    errors.push("User does not exist");
+    return res.render("login", { errors });
+  }
+
+  // Check for password matching
+  const passwordCheck = bcrypt.compareSync(password, userInDB.password);
+  if (!passwordCheck) {
+    errors.push("Password is incorrect");
   }
 
   if (errors.length > 0) {
     return res.render("login", { errors });
   }
 
-  return res.send(`Thanks, you're now logged in! ${username}`);
+  // Send back a cookie to the user
+  const ourTokenValue = jwt.sign(
+    { userId: userInDB.id, exp: Date.now() / 1000 + 60 * 60 * 24 * 7 },
+    process.env.JWTSECRET
+  );
+
+  res.cookie("user", ourTokenValue, {
+    httpOnly: true, // Not for client side JS
+    secure: true, // Only for https
+    sameSite: "strict", // CSRF Attacks but allows for subdomain
+    maxAge: 1000 * 60 * 60 * 24 * 7, // milliseconds, our cookie is good for a week
+  });
+
+  // Redirect them to the home page
+  res.redirect("/");
 });
 
 // Logout
