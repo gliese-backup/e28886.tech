@@ -36,7 +36,7 @@ app.use(cookieParser());
 app.use(express.static("public")); // Using public as our static
 app.use(express.urlencoded({ extended: false })); // Parse form data
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   res.locals.errors = []; // Setting empty errors for all templates
 
   // Try to decode incoming cookie
@@ -44,11 +44,10 @@ app.use(function (req, res, next) {
     const decoded = jwt.verify(req.cookies.user, process.env.JWTSECRET);
     req.user = decoded.userId;
   } catch (err) {
-    console.log("There is either no cookie, or malformed");
     req.user = false;
   }
 
-  // req.locals.user = req.user; // Access from templates!
+  res.locals.user = req.user; // Access from templates!
 
   console.log(req.user);
 
@@ -114,6 +113,7 @@ app.post("/register", (req, res) => {
   );
   const result = statement.run(username, password);
 
+  // Get newly created user db rowid
   const lookUp = db.prepare(`SELECT * FROM USERS WHERE ROWID = ?`);
   const ourUser = lookUp.get(result.lastInsertRowid);
 
@@ -138,6 +138,7 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
+// TODO: Implement Login
 app.post("/login", (req, res) => {
   let { username, password } = req.body;
   const errors = [];
