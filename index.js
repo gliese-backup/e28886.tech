@@ -58,6 +58,10 @@ const users = {};
 
 // MARK: Routes
 app.get("/", (req, res) => {
+  if (req.user) {
+    return res.render("dashboard");
+  }
+
   res.render("homepage");
 });
 
@@ -130,7 +134,7 @@ app.post("/register", (req, res) => {
     maxAge: 1000 * 60 * 60 * 24 * 7, // milliseconds, our cookie is good for a week
   });
 
-  return res.send(`Thank you for registration ${username}`);
+  res.redirect("/");
 });
 // User Registration Ends
 
