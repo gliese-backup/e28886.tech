@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
+const sanitizeHtml = require("sanitize-html");
 
 const db = require("better-sqlite3")("database.db");
 db.pragma("journal_mode = WAL");
@@ -23,6 +24,19 @@ const createTables = db.transaction(() => {
       username STRING NOT NULL UNIQUE,
       password STRING NOT NULL
     )
+    `
+  ).run();
+
+  db.prepare(
+    `
+      CREATE TABLE IF NOT EXISTS papers(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        createdDate TEXT,
+        title STRING NOT NULL,
+        body STRING NOT NULL,
+        authorid INTEGER,
+        FOREIGN KEY (authorid) REFERENCES users (id)
+      )
     `
   ).run();
 });
@@ -209,6 +223,66 @@ app.post("/login", (req, res) => {
 app.get("/logout", (req, res) => {
   res.clearCookie("user");
   res.redirect("/");
+});
+
+// Implement Post Functionality
+function mustBeLoggedIn(req, res, next) {
+  if (req.user) {
+    return next();
+  }
+
+  return res.redirect("/");
+}
+
+// Common post request validation field
+function postValidation(req) {
+  const errors = [];
+
+  if (typeof req.body.title !== "string") req.body.title = "";
+  if (typeof req.body.body !== "string") req.body.body = "";
+
+  // TODO: Do not allow or remove any html tags
+  req.body.title = sanitizeHtml(req.body.title, {
+    allowedTags: [],
+    allowedAttributes: {},
+  });
+  req.body.body = sanitizeHtml(req.body.body, {
+    allowedTags: ["a"],
+    allowedAttributes: {
+      a: ["href"],
+    },
+  });
+
+  if (!req.body.title) errors.push("Title must not be empty");
+  if (!req.body.body) errors.push("Body must not be empty");
+
+  return errors;
+}
+
+app.get("/create-paper", mustBeLoggedIn, (req, res) => {
+  res.render("create-paper");
+});
+
+app.post("/create-paper", mustBeLoggedIn, (req, res) => {
+  const errors = postValidation(req);
+
+  if (errors.length) {
+    console.log("inside errors");
+    return res.render("create-paper", { errors });
+  }
+
+  // Save into database
+  const statement = db.prepare(
+    `INSERT INTO papers (title, body, authorid, createdDate) VALUES (?, ?, ?, ?)`
+  );
+  statement.run(
+    req.body.title,
+    req.body.body,
+    req.user,
+    new Date().toISOString()
+  );
+
+  return res.send("hey there");
 });
 
 app.listen(PORT, () => {
