@@ -275,14 +275,18 @@ app.post("/create-paper", mustBeLoggedIn, (req, res) => {
   const statement = db.prepare(
     `INSERT INTO papers (title, body, authorid, createdDate) VALUES (?, ?, ?, ?)`
   );
-  statement.run(
+  const result = statement.run(
     req.body.title,
     req.body.body,
     req.user,
     new Date().toISOString()
   );
 
-  return res.send("hey there");
+  // Redirect user to newly created paper
+  const getPostStatement = db.prepare(`SELECT * FROM papers WHERE ROWID = ?`);
+  const realPost = getPostStatement.get(result.lastInsertRowid);
+
+  return res.redirect(`/paper/${realPost.id}`);
 });
 
 app.listen(PORT, () => {
