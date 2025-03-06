@@ -5,7 +5,10 @@ const jwt = require("jsonwebtoken");
 const express = require("express");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
+<<<<<<< HEAD
 const sanitizeHtml = require("sanitize-html");
+=======
+>>>>>>> 9604e116d5922405110fc05c1585123bac3bbaa0
 
 const db = require("better-sqlite3")("database.db");
 db.pragma("journal_mode = WAL");
@@ -26,6 +29,7 @@ const createTables = db.transaction(() => {
     )
     `
   ).run();
+<<<<<<< HEAD
 
   db.prepare(
     `
@@ -39,6 +43,8 @@ const createTables = db.transaction(() => {
       )
     `
   ).run();
+=======
+>>>>>>> 9604e116d5922405110fc05c1585123bac3bbaa0
 });
 createTables();
 
@@ -225,6 +231,7 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+<<<<<<< HEAD
 // Implement Post Functionality
 function mustBeLoggedIn(req, res, next) {
   if (req.user) {
@@ -304,6 +311,8 @@ app.post("/create-paper", mustBeLoggedIn, (req, res) => {
   return res.redirect(`/paper/${realPost.id}`);
 });
 
+=======
+>>>>>>> 9604e116d5922405110fc05c1585123bac3bbaa0
 app.listen(PORT, () => {
   console.log(`Server fired up 🔥 on PORT: ${PORT}`);
 });
