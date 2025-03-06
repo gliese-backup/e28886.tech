@@ -263,6 +263,21 @@ app.get("/create-paper", mustBeLoggedIn, (req, res) => {
   res.render("create-paper");
 });
 
+// Read a paper route
+app.get("/paper/:id", (req, res) => {
+  // Read operation on db
+  const statement = db.prepare(
+    `SELECT papers.*, users.username FROM papers INNER JOIN users ON papers.authorid = users.id WHERE papers.id = ?`
+  );
+  const paper = statement.get(req.params.id);
+
+  if (!paper) {
+    return res.redirect("/");
+  }
+
+  return res.render("single-paper", { paper });
+});
+
 app.post("/create-paper", mustBeLoggedIn, (req, res) => {
   const errors = postValidation(req);
 
