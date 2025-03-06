@@ -71,7 +71,10 @@ app.use((req, res, next) => {
 // MARK: Routes
 app.get("/", (req, res) => {
   if (req.user) {
-    return res.render("dashboard");
+    const statement = db.prepare(`SELECT * FROM papers WHERE authorid = ?`);
+    const papers = statement.all(req.user);
+
+    return res.render("dashboard", { papers });
   }
 
   res.render("homepage");
