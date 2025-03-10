@@ -56,7 +56,8 @@ app.use((req, res, next) => {
   // Try to decode incoming cookie
   try {
     const decoded = jwt.verify(req.cookies.user, process.env.JWTSECRET);
-    req.user = decoded.userId;
+    const { userId, username } = decoded;
+    req.user = { userId, username };
   } catch (err) {
     req.user = false;
   }
@@ -72,7 +73,7 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   if (req.user) {
     const statement = db.prepare(`SELECT * FROM papers WHERE authorid = ?`);
-    const papers = statement.all(req.user);
+    const papers = statement.all(req.user.userId);
 
     return res.render("dashboard", { papers });
   }
@@ -143,7 +144,11 @@ app.post("/register", (req, res) => {
   const ourUser = lookUp.get(result.lastInsertRowid);
 
   const ourTokenValue = jwt.sign(
-    { userId: ourUser.id, exp: Date.now() / 1000 + 60 * 60 * 24 * 7 },
+    {
+      userId: ourUser.id,
+      username: username,
+      exp: Date.now() / 1000 + 60 * 60 * 24 * 7,
+    },
     process.env.JWTSECRET
   );
 
@@ -205,7 +210,11 @@ app.post("/login", (req, res) => {
 
   // Send back a cookie to the user
   const ourTokenValue = jwt.sign(
-    { userId: userInDB.id, exp: Date.now() / 1000 + 60 * 60 * 24 * 7 },
+    {
+      userId: userInDB.id,
+      username: username,
+      exp: Date.now() / 1000 + 60 * 60 * 24 * 7,
+    },
     process.env.JWTSECRET
   );
 
@@ -276,7 +285,7 @@ app.get("/paper/:id", (req, res) => {
     return res.redirect("/");
   }
 
-  const isAuthor = paper.authorid === req.user;
+  const isAuthor = paper.authorid === req.user.userId;
 
   return res.render("single-paper", { paper, isAuthor });
 });
@@ -291,7 +300,7 @@ app.get("/edit-paper/:id", mustBeLoggedIn, (req, res) => {
   }
 
   // check if the user has access to edit this paper
-  if (paper.authorid !== req.user) {
+  if (paper.authorid !== req.user.userId) {
     return res.redirect("/");
   }
 
@@ -309,7 +318,7 @@ app.post("/edit-paper/:id", mustBeLoggedIn, (req, res) => {
   }
 
   // check if the user has access to edit this paper
-  if (paper.authorid !== req.user) {
+  if (paper.authorid !== req.user.userId) {
     return res.redirect("/");
   }
 
@@ -337,7 +346,7 @@ app.post("/delete-paper/:id", mustBeLoggedIn, (req, res) => {
   }
 
   // check if the user has access to edit this paper
-  if (paper.authorid !== req.user) {
+  if (paper.authorid !== req.user.userId) {
     return res.redirect("/");
   }
 
@@ -363,7 +372,7 @@ app.post("/create-paper", mustBeLoggedIn, (req, res) => {
   const result = statement.run(
     req.body.title,
     req.body.body,
-    req.user,
+    req.user.userId,
     new Date().toISOString()
   );
 
