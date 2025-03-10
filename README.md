@@ -2,9 +2,9 @@
 
 # TODO
 
-[✅] Show user's name in dashboard
-[X] Render with proper HTML formatting
-[X] Show recent papers at top
+- [✅] Show user's name in dashboard
+- [x] Render with proper HTML formatting
+- [x] Show recent papers at top
 
 # Commands
 
