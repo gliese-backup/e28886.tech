@@ -78,7 +78,9 @@ app.use((req, res, next) => {
 // MARK: Routes
 app.get("/", (req, res) => {
   if (req.user) {
-    const statement = db.prepare(`SELECT * FROM papers WHERE authorid = ?`);
+    const statement = db.prepare(
+      `SELECT * FROM papers WHERE authorid = ? ORDER BY createdDate DESC`
+    );
     const papers = statement.all(req.user.userId);
 
     return res.render("dashboard", { papers });
