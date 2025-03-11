@@ -149,12 +149,15 @@
               <span></span>
               <span></span>
             </button>
-            <a
-              href="subscribe.html"
-              class="default-btn text-anim"
-              data-text="Subscribe"
-              >Subscribe</a
+            <% if(user) { %>
+            <a href="/logout" class="default-btn text-anim" data-text="Logout"
+              >Logout</a
             >
+            <% } else { %>
+            <a href="/login" class="default-btn text-anim" data-text="Login"
+              >Login</a
+            >
+            <%} %>
           </div>
         </div>
       </div>
