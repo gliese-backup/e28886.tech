@@ -26,6 +26,14 @@ app.use((req, res, next) => {
     return marked.parse(content);
   };
 
+  res.locals.recentPapers = function () {
+    const recentStatement = db.prepare(
+      `SELECT * FROM papers ORDER BY createdDate DESC`
+    );
+    const papers = recentStatement.all().slice(0, 4);
+    return papers;
+  };
+
   res.locals.errors = []; // Setting empty errors for all templates
   res.locals.title = "Publish Research Papers";
 
