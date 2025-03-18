@@ -40,6 +40,7 @@ app.use((req, res, next) => {
 
   res.locals.recentPapers = function () {
     const recentStatement = db.prepare(
+      // TODO: Modify to only get the first four using sql statement
       `SELECT * FROM papers ORDER BY createdDate DESC`
     );
 

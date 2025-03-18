@@ -4,6 +4,7 @@
 
 1. Implement bun sqlite: https://bun.sh/docs/api/sqlite
 2. Add comments functionality
+3. In our paper navigation buttons (moving between prev and next) stop next for the last paper
 
 # Commands
 
