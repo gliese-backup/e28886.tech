@@ -1,11 +1,5 @@
 # e28886.tech
 
-# TODO
-
-- [✅] Show user's name in dashboard
-- [x] Render with proper HTML formatting
-- [x] Show recent papers at top
-
 # Commands
 
 1. npm install better-sqlite3
