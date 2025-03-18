@@ -1,5 +1,9 @@
 # e28886.tech
 
+# TODO
+
+1. Implement bun sqlite: https://bun.sh/docs/api/sqlite
+
 # Commands
 
 1. npm install better-sqlite3
