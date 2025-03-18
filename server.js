@@ -42,6 +42,8 @@ app.use((req, res, next) => {
     const recentStatement = db.prepare(
       `SELECT * FROM papers ORDER BY createdDate DESC`
     );
+
+    // Give recently published 4
     const papers = recentStatement.all().slice(0, 4);
     return papers;
   };
@@ -50,6 +52,11 @@ app.use((req, res, next) => {
     return (
       title.substring(0, maxLength) + (title.length > maxLength ? "..." : "")
     );
+  };
+
+  res.locals.formatDate = function (dateTimeStamp) {
+    const date = new Intl.DateTimeFormat("en-US", dateTimeStamp);
+    return date.format();
   };
 
   console.log(req.user);

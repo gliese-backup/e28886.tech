@@ -3,6 +3,7 @@
 # TODO
 
 1. Implement bun sqlite: https://bun.sh/docs/api/sqlite
+2. Add comments functionality
 
 # Commands
 
