@@ -378,7 +378,6 @@ app.post("/create-paper", mustBeLoggedIn, (req, res) => {
   const errors = postValidation(req);
 
   if (errors.length) {
-    console.log("inside errors");
     return res.render("create-paper", { errors });
   }
 
@@ -394,7 +393,7 @@ app.post("/create-paper", mustBeLoggedIn, (req, res) => {
   );
 
   // Redirect user to newly created paper
-  const getPostStatement = db.prepare(`SELECT * FROM papers WHERE ROWID = ?`);
+  const getPostStatement = db.prepare(`SELECT id FROM papers WHERE ROWID = ?`);
   const realPost = getPostStatement.get(result.lastInsertRowid);
 
   return res.redirect(`/paper/${realPost.id}`);
