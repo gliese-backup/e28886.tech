@@ -2,8 +2,26 @@
 
 # TODO
 
-[X] Bun support
-[X] AI Images for new papers
+[✅] Bun support
+[✅] AI Images for new papers
+
+steps:
+
+1. remove package-lock.json file
+2. install bun and add that in package.json
+3. go inside db.js file and port from bettersqlite to bun:sqlite
+4. make change in create-paper POST route and add cloudflare fetch function
+5. add all the env variables inside .env file (cf account_id, api_token)
+
+```
+PORT=
+JWTSECRET=""
+ACCOUNT_ID=""
+MODEL_NAME="@cf/black-forest-labs/flux-1-schnell"
+CLOUDFLARE_API_TOKEN=""
+```
+
+6. Inside our paper table don't forget to add `image blob`
 
 # Planned
 
