@@ -2,7 +2,7 @@ console.clear();
 
 import jwt from "jsonwebtoken";
 import express from "express";
-import bcrypt from "bcrypt";
+// import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
 import sanitizeHtml from "sanitize-html";
 import { marked } from "marked";
@@ -87,7 +87,7 @@ app.get("/", (req, res) => {
 });
 
 // User Registration Starts
-app.post("/register", (req, res) => {
+app.post("/register", async (req, res) => {
   let { username, password } = req.body;
   const errors = [];
 
@@ -136,13 +136,14 @@ app.post("/register", (req, res) => {
   }
 
   // Add the user to our database
-  const salt = bcrypt.genSaltSync(10);
-  password = bcrypt.hashSync(password, salt);
+  // const salt = bcrypt.genSaltSync(10);
+  // password = bcrypt.hashSync(password, salt);
+  const hashedPass = await Bun.password.hash(password);
 
   const statement = db.prepare(
     `INSERT INTO users (username, password) VALUES (?, ?)`
   );
-  const result = statement.run(username, password);
+  const result = statement.run(username, hashedPass);
 
   // Get newly created user db rowid
   const lookUp = db.prepare(`SELECT * FROM USERS WHERE ROWID = ?`);
@@ -174,7 +175,7 @@ app.get("/login", (req, res) => {
 });
 
 // Implement Login
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   let { username, password } = req.body;
   const errors = [];
 
@@ -204,7 +205,8 @@ app.post("/login", (req, res) => {
   }
 
   // Check for password matching
-  const passwordCheck = bcrypt.compareSync(password, userInDB.password);
+  // const passwordCheck = bcrypt.compareSync(password, userInDB.password);
+  const passwordCheck = await Bun.password.verify(password, userInDB.password);
   if (!passwordCheck) {
     errors.push("Password is incorrect");
   }
