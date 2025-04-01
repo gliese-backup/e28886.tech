@@ -2,6 +2,7 @@
 
 # TODO
 
-[] Bun bcrypt
-[] Comment functionality
-[] Deployment
+[X] Bun bcrypt
+[X] Comment functionality
+[X] Deployment
+[] Comment Delete

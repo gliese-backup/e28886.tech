@@ -177,29 +177,33 @@
             <div class="single-post-item">
               <h3>Discussions</h3>
               <ul class="comments-box">
+                <% if(comments && comments.length){ %> <%
+                comments.forEach(comment => { %>
                 <li class="comment">
                   <div class="comment-inner">
                     <div class="comment-thumb">
                       <img
-                        src="https://ui-avatars.com/api/?name=<%= user %>&background=random"
+                        src="https://ui-avatars.com/api/?name=<%= comment.username %>&background=random"
                         alt="img"
                       />
                     </div>
                     <div class="comment-wrap">
                       <div class="comments-meta">
-                        <h4>Patsy Hamlin <span>01.01.2024 at 8:00</span></h4>
+                        <h4
+                          ><%= comment.username %>
+                          <span
+                            ><%= formatDate(comment.createdDate) %></span
+                          ></h4
+                        >
                       </div>
                       <div class="comment-area">
-                        <p>
-                          Outstanding quality in this theme, brilliant Effects
-                          and perfect crafted Code. We absolutely love it and
-                          can highly recommend DynamicLayers!
-                        </p>
-                        <a href="#" class="reply">Reply</a>
+                        <p> <%- formatHTML(comment.content) %> </p>
+                        <a href="#" class="reply">Delete</a>
                       </div>
                     </div>
                   </div>
                 </li>
+                <% }) %> <% } %>
               </ul>
 
               <!-- Show comment only when user logged in -->
