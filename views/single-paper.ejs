@@ -173,58 +173,17 @@
             </div>
             <!--/.post-navigation-->
 
-            <!-- Add comments functionality -->
-            <!-- <div class="single-post-item">
-              <h3>Post Comments</h3>
+            <!-- TODO: Add comments functionality -->
+            <div class="single-post-item">
+              <h3>Discussions</h3>
               <ul class="comments-box">
                 <li class="comment">
                   <div class="comment-inner">
                     <div class="comment-thumb">
-                      <img src="/assets/img/author-1.jpg" alt="img" />
-                    </div>
-                    <div class="comment-wrap">
-                      <div class="comments-meta">
-                        <h4>Félix Lengyel <span>01.01.2024 at 8:00</span></h4>
-                      </div>
-                      <div class="comment-area">
-                        <p>
-                          You guys have put so much work, effort, and time while
-                          designing this awesome theme I can see that passion
-                          when I incorporated it into my website.
-                        </p>
-                        <a href="#" class="reply">Reply</a>
-                      </div>
-                    </div>
-                  </div>
-                  <ul class="children">
-                    <li class="comment">
-                      <div class="comment-inner">
-                        <div class="comment-thumb">
-                          <img src="/assets/img/author-2.jpg" alt="img" />
-                        </div>
-                        <div class="comment-wrap">
-                          <div class="comments-meta">
-                            <h4>
-                              Joseph Crawford <span>01.01.2024 at 8:00</span>
-                            </h4>
-                          </div>
-                          <div class="comment-area">
-                            <p>
-                              The only thing I LOVE more than this theme and
-                              it’s incredible options is the support team! They
-                              are freaking amazable!
-                            </p>
-                            <a href="#" class="reply">Reply</a>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </li>
-                <li class="comment">
-                  <div class="comment-inner">
-                    <div class="comment-thumb">
-                      <img src="/assets/img/author-3.jpg" alt="img" />
+                      <img
+                        src="https://ui-avatars.com/api/?name=<%= user %>&background=random"
+                        alt="img"
+                      />
                     </div>
                     <div class="comment-wrap">
                       <div class="comments-meta">
@@ -243,38 +202,20 @@
                 </li>
               </ul>
 
+              <!-- Show comment only when user logged in -->
+              <% if(user) { %>
               <div class="comment-form-wrap">
                 <h3>Leave a Reply</h3>
                 <form
-                  action="#"
-                  method="post"
+                  action="/paper/<%= paper.id %>/comment"
+                  method="POST"
                   class="comment-form form-horizontal"
                 >
                   <div class="comment-form-group">
-                    <div class="form-field">
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        class="form-control"
-                        placeholder="Name*"
-                        required=""
-                      />
-                    </div>
-                    <div class="form-field">
-                      <input
-                        type="text"
-                        id="email"
-                        name="email"
-                        class="form-control"
-                        placeholder="Email*"
-                        required=""
-                      />
-                    </div>
                     <div class="form-field message">
                       <textarea
                         id="comment"
-                        name="comment"
+                        name="content"
                         cols="30"
                         rows="5"
                         class="form-control comment"
@@ -295,7 +236,17 @@
                   </div>
                 </form>
               </div>
-            </div> -->
+              <% } else { %>
+              <div class="comment-form-wrap">
+                <a
+                  href="/login"
+                  class="default-btn text-anim"
+                  data-text="Login to comment"
+                  >Login to comment</a
+                >
+              </div>
+              <% } %>
+            </div>
             <!--/.post-comments-->
           </div>
         </div>
